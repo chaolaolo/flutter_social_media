@@ -2,24 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_social_media/features/auth/presentation/components/my_button.dart';
 import 'package:flutter_social_media/features/auth/presentation/components/my_text_field.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final void Function()? togglePages;
 
-  const LoginPage({
+  const RegisterPage({
     super.key,
     required this.togglePages,
   });
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   //Text Editing Controller
+  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
 
-  //UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,15 +39,22 @@ class _LoginPageState extends State<LoginPage> {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 SizedBox(height: 50),
-                //welcome back msg
+                //Create account msg
                 Text(
-                  'Welcome back you\'ve been missed!',
+                  'Let\'s create an account for you!',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 16,
                   ),
                 ),
                 SizedBox(height: 25),
+                // name text field
+                MyTextField(
+                  controller: nameController,
+                  hintText: "Name",
+                  obscureText: false,
+                ),
+                SizedBox(height: 10),
                 // email text field
                 MyTextField(
                   controller: emailController,
@@ -60,17 +68,23 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: "Password",
                   obscureText: true,
                 ),
-                //login button
+                SizedBox(height: 10),
+                // confirm password text field
+                MyTextField(
+                  controller: confirmPasswordController,
+                  hintText: "Confirm Password",
+                  obscureText: true,
+                ),
+                //Register button
                 SizedBox(height: 25),
-                MyButton(onTap: () {}, text: "Login"),
+                MyButton(onTap: () {}, text: "Register"),
                 SizedBox(height: 25),
-                //forgot password
-                //not a member? register
+                //already a member? login
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Not a member? ",
+                      "Already a member? ",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                       ),
@@ -78,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                     GestureDetector(
                       onTap: widget.togglePages,
                       child: Text(
-                        "Register now",
+                        "Login now",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.inversePrimary,
                           fontWeight: FontWeight.bold,
