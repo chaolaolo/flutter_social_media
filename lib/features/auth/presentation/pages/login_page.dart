@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_social_media/features/auth/presentation/components/my_button.dart';
 import 'package:flutter_social_media/features/auth/presentation/components/my_text_field.dart';
+import 'package:flutter_social_media/features/auth/presentation/cubits/auth_cubits.dart';
 
 class LoginPage extends StatefulWidget {
   final void Function()? togglePages;
@@ -18,6 +20,29 @@ class _LoginPageState extends State<LoginPage> {
   //Text Editing Controller
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  //login method
+  void login() {
+    //prepare email & password
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    //call login method from cubit
+    final authCubit = context.read<AuthCubit>();
+    //ensure that email and password are not empty
+    if (email.isNotEmpty && password.isNotEmpty) {
+      authCubit.login(email, password);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please enter both email and password!")));
+    }
+  }
+
+  //
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   //UI
   @override
@@ -62,7 +87,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 //login button
                 SizedBox(height: 25),
-                MyButton(onTap: () {}, text: "Login"),
+                MyButton(
+                  onTap: login,
+                  text: "Login",
+                ),
                 SizedBox(height: 25),
                 //forgot password
                 //not a member? register

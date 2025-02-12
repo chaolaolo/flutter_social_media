@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_social_media/features/auth/presentation/components/my_button.dart';
 import 'package:flutter_social_media/features/auth/presentation/components/my_text_field.dart';
+import 'package:flutter_social_media/features/auth/presentation/cubits/auth_cubits.dart';
 
 class RegisterPage extends StatefulWidget {
   final void Function()? togglePages;
@@ -20,6 +22,38 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+
+  //register method
+  void register() {
+    //prepare info
+    final String name = nameController.text;
+    final String email = emailController.text;
+    final String password = passwordController.text;
+    final String confirmPassword = confirmPasswordController.text;
+
+    //auth cubit
+    final authCubit = context.read<AuthCubit>();
+    //ensure that all fields are filled
+    if (name.isNotEmpty && email.isNotEmpty && password.isNotEmpty && confirmPassword.isNotEmpty) {
+      //ensure that password and confirm password match
+      if (password == confirmPassword) {
+        authCubit.register(name, email, password);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Passwords do not match!")));
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please enter all fields!")));
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +111,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 //Register button
                 SizedBox(height: 25),
-                MyButton(onTap: () {}, text: "Register"),
+                MyButton(onTap: register, text: "Register"),
                 SizedBox(height: 25),
                 //already a member? login
                 Row(
