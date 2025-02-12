@@ -5,6 +5,8 @@ import 'package:flutter_social_media/features/auth/presentation/cubits/auth_cubi
 import 'package:flutter_social_media/features/auth/presentation/cubits/auth_states.dart';
 import 'package:flutter_social_media/features/auth/presentation/pages/auth_page.dart';
 import 'package:flutter_social_media/features/home/presentation/pages/home_page.dart';
+import 'package:flutter_social_media/features/profile/data/firebase_profile_repository.dart';
+import 'package:flutter_social_media/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:flutter_social_media/themes/light_mode.dart';
 
 /*
@@ -26,6 +28,9 @@ class MyApp extends StatelessWidget {
   // auth repo
   final authRepo = FirebaseAuthRepository();
 
+  // profile repo
+  final profileRepo = FirebaseProfileRepository();
+
   MyApp({super.key});
 
   @override
@@ -36,8 +41,17 @@ class MyApp extends StatelessWidget {
     //   home: const AuthPage(),
     // );
     //provide cubit to app
-    return BlocProvider(
-      create: (context) => AuthCubit(authRepo: authRepo)..checkAuthStatus(),
+    return MultiBlocProvider(
+      providers: [
+        // auth cubit
+        BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(authRepo: authRepo)..checkAuthStatus(),
+        ),
+        // profile cubit
+        BlocProvider<ProfileCubit>(
+          create: (context) => ProfileCubit(profileRepository: profileRepo),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightMode,
@@ -62,5 +76,31 @@ class MyApp extends StatelessWidget {
         ),
       ),
     );
+    // BlocProvider(
+    //   create: (context) => AuthCubit(authRepo: authRepo)..checkAuthStatus(),
+    //   child: MaterialApp(
+    //     debugShowCheckedModeBanner: false,
+    //     theme: lightMode,
+    //     home: BlocConsumer<AuthCubit, AuthState>(
+    //       builder: (context, authState) {
+    //         print(authState);
+    //         if (authState is Unauthenticated) {
+    //           return const AuthPage();
+    //         }
+    //         if (authState is Authenticated) {
+    //           return const HomePage();
+    //         } else {
+    //           return const Center(child: CircularProgressIndicator());
+    //         }
+    //       },
+    //       //listen to auth error
+    //       listener: (context, state) {
+    //         if (state is AuthError) {
+    //           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+    //         }
+    //       },
+    //     ),
+    //   ),
+    // );
   }
 }

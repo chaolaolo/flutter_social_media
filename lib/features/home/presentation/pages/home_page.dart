@@ -18,18 +18,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       // APPBAR
       appBar: AppBar(
-        title: Center(child: Text("Home")),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.read<AuthCubit>().logout();
-            },
-            icon: Icon(Icons.logout),
-          )
-        ],
+        title: Text("Home"),
+        centerTitle: true,
       ),
       //DRAWER
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
     );
   }
 }
