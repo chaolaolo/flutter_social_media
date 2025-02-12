@@ -4,7 +4,7 @@ import 'package:flutter_social_media/features/auth/data/firebase_auth_repository
 import 'package:flutter_social_media/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:flutter_social_media/features/auth/presentation/cubits/auth_states.dart';
 import 'package:flutter_social_media/features/auth/presentation/pages/auth_page.dart';
-import 'package:flutter_social_media/features/post/presentation/pages/home_page.dart';
+import 'package:flutter_social_media/features/home/presentation/pages/home_page.dart';
 import 'package:flutter_social_media/themes/light_mode.dart';
 
 /*
@@ -14,7 +14,7 @@ import 'package:flutter_social_media/themes/light_mode.dart';
   - Bloc Providers: for state management
     + auth
     + profile
-    + post
+    + home
     + search
     + theme
   - Check auth state
