@@ -6,6 +6,9 @@ import 'package:flutter_social_media/features/storage/domain/storagre_repository
 class FirebaseStorageRepository implements StorageRepository {
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
+  /*
+  * UPLOAD PROFILE IMAGE
+  * */
   //mobile platform
   @override
   Future<String?> uploadProfileImageMobile(String path, String fileName) {
@@ -16,6 +19,19 @@ class FirebaseStorageRepository implements StorageRepository {
   @override
   Future<String?> uploadProfileImageWeb(Uint8List file, String fileName) {
     return _uploadBytes(file, fileName, "profile_images");
+  }
+
+  /*
+  * POST IMAGE UPLOAD
+  * */
+  @override
+  Future<String?> uploadPostImageMobile(String path, String fileName) {
+    return _uploadFile(path, fileName, "post_images");
+  }
+
+  @override
+  Future<String?> uploadPostImageWeb(Uint8List file, String fileName) {
+    return _uploadBytes(file, fileName, "post_images");
   }
 
 //===========
