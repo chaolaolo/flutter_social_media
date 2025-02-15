@@ -8,9 +8,11 @@ import 'package:flutter_social_media/features/post/presentation/cubits/post_cubi
 import 'package:flutter_social_media/features/post/presentation/cubits/post_states.dart';
 import 'package:flutter_social_media/features/profile/presentation/components/bio_box.dart';
 import 'package:flutter_social_media/features/profile/presentation/components/follow_button.dart';
+import 'package:flutter_social_media/features/profile/presentation/components/profile_stats.dart';
 import 'package:flutter_social_media/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:flutter_social_media/features/profile/presentation/cubits/profile_states.dart';
 import 'package:flutter_social_media/features/profile/presentation/pages/edit_profile_page.dart';
+import 'package:flutter_social_media/features/profile/presentation/pages/follower_page.dart';
 
 import '../cubits/profile_cubit.dart';
 
@@ -118,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
 
                 //profile image
-                SizedBox(height: 25),
+                SizedBox(height: 20),
                 CachedNetworkImage(
                   imageUrl: user.profileImageUrl,
                   //loading..
@@ -142,7 +144,23 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 25),
+                SizedBox(height: 10),
+                //Profile stats
+                ProfileStats(
+                  postCount: postCount,
+                  followerCount: user.followers.length,
+                  followingCount: user.following.length,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FollowerPage(
+                        followers: user.followers,
+                        following: user.following,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
                 //follow button
                 if (!isOwnPost)
                   FollowButton(
