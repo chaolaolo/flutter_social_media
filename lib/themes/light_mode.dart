@@ -16,10 +16,12 @@ import 'package:flutter/material.dart';
 
 ThemeData lightMode = ThemeData(
   colorScheme: ColorScheme.light(
+    surface: Colors.grey.shade100, // Màu nền
     background: Colors.white, // Màu nền sáng hơn
     primary: Colors.blueGrey.shade300, // Màu chính nhẹ hơn
     secondary: Colors.blueGrey.shade100, // Màu phụ
     tertiary: Colors.grey.shade200, // Màu nhấn
     inversePrimary: Colors.blueGrey, // Màu đối lập cho chữ
   ),
+  scaffoldBackgroundColor: Colors.grey.shade100,
 );

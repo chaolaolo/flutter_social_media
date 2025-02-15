@@ -5,6 +5,7 @@ import 'package:flutter_social_media/features/home/presentation/components/my_dr
 import 'package:flutter_social_media/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:flutter_social_media/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter_social_media/features/search/presentation/pages/search_page.dart';
+import 'package:flutter_social_media/features/settings/presentation/pages/settings_page.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -67,7 +68,16 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             //Settings tile
-            MyDrawerTile(title: "SETTINGS", icon: Icons.settings, onTap: () {}),
+            MyDrawerTile(
+              title: "SETTINGS",
+              icon: Icons.settings,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsPage(),
+                ),
+              ),
+            ),
             Spacer(),
             //Logout tile
             MyDrawerTile(

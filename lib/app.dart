@@ -12,7 +12,9 @@ import 'package:flutter_social_media/features/profile/presentation/cubits/profil
 import 'package:flutter_social_media/features/search/data/firebase_search_repository.dart';
 import 'package:flutter_social_media/features/search/presentation/cubits/search_cubit.dart';
 import 'package:flutter_social_media/features/storage/data/firebase_storage_repository.dart';
+import 'package:flutter_social_media/themes/dark_mode.dart';
 import 'package:flutter_social_media/themes/light_mode.dart';
+import 'package:flutter_social_media/themes/theme_cubit.dart';
 
 /*
   - App - Root level
@@ -76,32 +78,39 @@ class MyApp extends StatelessWidget {
         ),
         //Search cubit
         BlocProvider<SearchCubit>(
-          create: (context) => SearchCubit(searchRepository: firebaseSearchRepository),
-        ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: lightMode,
-        home: BlocConsumer<AuthCubit, AuthState>(
-          builder: (context, authState) {
-            print(authState);
-            if (authState is Unauthenticated) {
-              return const AuthPage();
-            }
-            if (authState is Authenticated) {
-              return const HomePage();
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-          //listen to auth error
-          listener: (context, state) {
-            if (state is AuthError) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
-            }
-          },
-        ),
-      ),
-    );
+            create: (context) => SearchCubit(
+              searchRepository: firebaseSearchRepository,
+            ),
+          ),
+          //theme cubit
+          BlocProvider<ThemeCubit>(
+            create: (context) => ThemeCubit(),
+          ),
+        ],
+        child: BlocBuilder<ThemeCubit, ThemeData>(
+          builder: (context, currentTheme) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: currentTheme,
+            home: BlocConsumer<AuthCubit, AuthState>(
+              builder: (context, authState) {
+                print(authState);
+                if (authState is Unauthenticated) {
+                  return const AuthPage();
+                }
+                if (authState is Authenticated) {
+                  return const HomePage();
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+              //listen to auth error
+              listener: (context, state) {
+                if (state is AuthError) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+                }
+              },
+            ),
+          ),
+        ));
   }
 }
