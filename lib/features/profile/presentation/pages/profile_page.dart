@@ -7,6 +7,7 @@ import 'package:flutter_social_media/features/post/presentation/components/post_
 import 'package:flutter_social_media/features/post/presentation/cubits/post_cubit.dart';
 import 'package:flutter_social_media/features/post/presentation/cubits/post_states.dart';
 import 'package:flutter_social_media/features/profile/presentation/components/bio_box.dart';
+import 'package:flutter_social_media/features/profile/presentation/components/follow_button.dart';
 import 'package:flutter_social_media/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:flutter_social_media/features/profile/presentation/cubits/profile_states.dart';
 import 'package:flutter_social_media/features/profile/presentation/pages/edit_profile_page.dart';
@@ -40,9 +41,42 @@ class _ProfilePageState extends State<ProfilePage> {
     profileCubit.fetchUserProfile(widget.uid);
   }
 
+  //follow/unfollow method
+  void followButtonPressed() {
+    final profileState = profileCubit.state;
+    if (profileState is! ProfileLoaded) {
+      return;
+    }
+    final profileUser = profileState.profileUser;
+    final isFollowing = profileUser.followers.contains(currentUser?.uid);
+
+    //optimistically update UI
+    setState(() {
+      if (isFollowing) {
+        profileUser.followers.remove(currentUser!.uid);
+      } else {
+        profileUser.followers.add(currentUser!.uid);
+      }
+    });
+
+    profileCubit.toggleFollow(currentUser!.uid, widget.uid).catchError((error) {
+      // revert update if there's an error
+      setState(() {
+        if (isFollowing) {
+          profileUser.followers.add(currentUser!.uid);
+        } else {
+          profileUser.followers.remove(currentUser!.uid);
+        }
+      });
+    });
+  }
+
   //UI
   @override
   Widget build(BuildContext context) {
+    //is own post
+    bool isOwnPost = (currentUser?.uid == widget.uid);
+
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         //loaded
@@ -56,9 +90,11 @@ class _ProfilePageState extends State<ProfilePage> {
               centerTitle: true,
               foregroundColor: Theme.of(context).colorScheme.primary,
               actions: [
-                IconButton(
-                  onPressed: () => Navigator.push(
-                    context,
+                //edit profile button
+                if (isOwnPost)
+                  IconButton(
+                    onPressed: () => Navigator.push(
+                      context,
                     MaterialPageRoute(
                       builder: (context) => EditProfilePage(user: user,),
                     ),
@@ -106,6 +142,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
+                SizedBox(height: 25),
+                //follow button
+                if (!isOwnPost)
+                  FollowButton(
+                    isFollowing: user.followers.contains(currentUser!.uid),
+                    onPressed: followButtonPressed,
+                  ),
                 SizedBox(height: 25),
                 //bio box
                 Padding(
