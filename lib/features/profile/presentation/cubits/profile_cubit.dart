@@ -15,7 +15,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     required this.storageRepository,
   }) : super(ProfileInitial());
 
-// fetch user profile using repo
+// fetch user profile using repo -> useful for loading single profile page
   Future<void> fetchUserProfile(String uid) async {
     try {
       emit(ProfileLoading());
@@ -28,6 +28,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     } catch (e) {
       emit(ProfileError(e.toString()));
     }
+  }
+
+  //return user profile given uid -> useful for loading many profiles for posts
+  Future<ProfileUser?> getUserProfile(String uid) async {
+    final user = await profileRepository.fetchUserProfile(uid);
+    return user;
   }
 
   //update bio or profile image

@@ -20,5 +20,6 @@ ThemeData darkMode = ThemeData(
     secondary: Colors.grey.shade600, // Màu phụ
     tertiary: Colors.grey.shade700, // Màu nhấn
     inversePrimary: Colors.white, // Màu đối lập cho chữ
+    // inversePrimary: Colors.blueGrey.shade50, // Màu đối lập cho chữ
   ),
 );

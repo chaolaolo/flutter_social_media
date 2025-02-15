@@ -20,6 +20,6 @@ ThemeData lightMode = ThemeData(
     primary: Colors.blueGrey.shade300, // Màu chính nhẹ hơn
     secondary: Colors.blueGrey.shade100, // Màu phụ
     tertiary: Colors.grey.shade200, // Màu nhấn
-    inversePrimary: Colors.black, // Màu đối lập cho chữ
+    inversePrimary: Colors.blueGrey, // Màu đối lập cho chữ
   ),
 );

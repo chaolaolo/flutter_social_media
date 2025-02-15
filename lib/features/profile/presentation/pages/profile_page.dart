@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_social_media/features/auth/domain/entities/app_user.dart';
 import 'package:flutter_social_media/features/auth/presentation/cubits/auth_cubits.dart';
+import 'package:flutter_social_media/features/post/presentation/components/post_tile.dart';
+import 'package:flutter_social_media/features/post/presentation/cubits/post_cubit.dart';
+import 'package:flutter_social_media/features/post/presentation/cubits/post_states.dart';
 import 'package:flutter_social_media/features/profile/presentation/components/bio_box.dart';
 import 'package:flutter_social_media/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:flutter_social_media/features/profile/presentation/cubits/profile_states.dart';
@@ -26,6 +29,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   //current user
   late AppUser? currentUser = authCubit.currentUser;
+
+  //posts
+  int postCount = 0;
 
   //on startup
   @override
@@ -63,46 +69,48 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
 
             //BODY
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              child: Column(
-                children: [
-                  //email
-                  Text(
+            body: ListView(
+              children: [
+                //email
+                Center(
+                  child: Text(
                     user.email,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
+                ),
 
-                  //profile image
-                  SizedBox(height: 25),
-                  CachedNetworkImage(
-                    imageUrl: user.profileImageUrl,
-                    //loading..
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    //error
-                    errorWidget: (context, url, error) => Icon(
-                      Icons.person,
-                      size: 70,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    //loaded
-                    imageBuilder: (context, imageProvider) => Container(
-                      height: 120,
-                      width: 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                        ),
+                //profile image
+                SizedBox(height: 25),
+                CachedNetworkImage(
+                  imageUrl: user.profileImageUrl,
+                  //loading..
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  //error
+                  errorWidget: (context, url, error) => Icon(
+                    Icons.person,
+                    size: 70,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  //loaded
+                  imageBuilder: (context, imageProvider) => Container(
+                    height: 120,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  SizedBox(height: 25),
-                  //bio box
-                  Row(
+                ),
+                SizedBox(height: 25),
+                //bio box
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Row(
                     children: [
                       Text(
                         "Bio",
@@ -112,27 +120,70 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  BioBox(text: user.bio),
-                  SizedBox(height: 25),
-                  //posts
-                  Row(
+                ),
+                SizedBox(height: 10),
+                BioBox(text: user.bio),
+                SizedBox(height: 25),
+                //posts
+                Padding(
+                  padding: const EdgeInsets.only(left: 25.0, bottom: 10),
+                  child: Row(
                     children: [
                       Text(
-                        "Posts",
+                        "Your Posts",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+
+                //list of posts from this user
+                BlocBuilder<PostCubit, PostState>(builder: (context, state) {
+                  // loaded
+                  if (state is PostsLoaded) {
+                    //filter posts by user id
+                    final userPosts = state.posts.where((post) => post.userId == widget.uid).toList();
+
+                    postCount = userPosts.length;
+
+                    return ListView.builder(
+                      itemCount: postCount,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final post = userPosts[index];
+                        return PostTile(
+                          post: post,
+                          onDeletePressed: () {
+                            context.read<PostCubit>().deletePost(post.id);
+                          },
+                        );
+                      },
+                    );
+                  } else if (state is PostsLoading) {
+                    // posts loading
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    //error
+                    return Center(
+                      child: Text("No posts found.."),
+                    );
+                  }
+                }),
+              ],
             ),
           );
         } else if (state is ProfileLoading) {
           return Center(
             child: CircularProgressIndicator(),
+          );
+        } else if (state is ProfileError) {
+          return Center(
+            child: Text("Error: ${state.errorMessage}"),
           );
         } else {
           return Center(

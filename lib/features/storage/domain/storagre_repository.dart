@@ -4,6 +4,12 @@ abstract class StorageRepository {
   //upload profile images on mobile platforms
   Future<String?> uploadProfileImageMobile(String path, String fileName);
 
-//upload profile images on web platforms
+  //upload profile images on web platforms
   Future<String?> uploadProfileImageWeb(Uint8List file, String fileName);
+
+  //upload post images on mobile platforms
+  Future<String?> uploadPostImageMobile(String path, String fileName);
+
+  //upload post images on web platforms
+  Future<String?> uploadPostImageWeb(Uint8List file, String fileName);
 }

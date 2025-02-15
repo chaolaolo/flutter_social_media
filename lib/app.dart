@@ -5,6 +5,8 @@ import 'package:flutter_social_media/features/auth/presentation/cubits/auth_cubi
 import 'package:flutter_social_media/features/auth/presentation/cubits/auth_states.dart';
 import 'package:flutter_social_media/features/auth/presentation/pages/auth_page.dart';
 import 'package:flutter_social_media/features/home/presentation/pages/home_page.dart';
+import 'package:flutter_social_media/features/post/data/firebase_post_repository.dart';
+import 'package:flutter_social_media/features/post/presentation/cubits/post_cubit.dart';
 import 'package:flutter_social_media/features/profile/data/firebase_profile_repository.dart';
 import 'package:flutter_social_media/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:flutter_social_media/features/storage/data/firebase_storage_repository.dart';
@@ -34,6 +36,9 @@ class MyApp extends StatelessWidget {
   // storage repo
   final firebaseStorageRepository = FirebaseStorageRepository();
 
+  // post repo
+  final firebasePostRepository = FirebasePostRepository();
+
   MyApp({super.key});
 
   @override
@@ -54,6 +59,13 @@ class MyApp extends StatelessWidget {
         BlocProvider<ProfileCubit>(
           create: (context) => ProfileCubit(
             profileRepository: firebaseProfileRepository,
+            storageRepository: firebaseStorageRepository,
+          ),
+        ),
+        // post cubit
+        BlocProvider<PostCubit>(
+          create: (context) => PostCubit(
+            postRepository: firebasePostRepository,
             storageRepository: firebaseStorageRepository,
           ),
         ),
@@ -82,31 +94,5 @@ class MyApp extends StatelessWidget {
         ),
       ),
     );
-    // BlocProvider(
-    //   create: (context) => AuthCubit(authRepo: authRepo)..checkAuthStatus(),
-    //   child: MaterialApp(
-    //     debugShowCheckedModeBanner: false,
-    //     theme: lightMode,
-    //     home: BlocConsumer<AuthCubit, AuthState>(
-    //       builder: (context, authState) {
-    //         print(authState);
-    //         if (authState is Unauthenticated) {
-    //           return const AuthPage();
-    //         }
-    //         if (authState is Authenticated) {
-    //           return const HomePage();
-    //         } else {
-    //           return const Center(child: CircularProgressIndicator());
-    //         }
-    //       },
-    //       //listen to auth error
-    //       listener: (context, state) {
-    //         if (state is AuthError) {
-    //           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
-    //         }
-    //       },
-    //     ),
-    //   ),
-    // );
   }
 }
