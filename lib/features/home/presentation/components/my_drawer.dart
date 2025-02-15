@@ -4,6 +4,7 @@ import 'package:flutter_social_media/features/auth/presentation/cubits/auth_cubi
 import 'package:flutter_social_media/features/home/presentation/components/my_drawer_tile.dart';
 import 'package:flutter_social_media/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:flutter_social_media/features/profile/presentation/pages/profile_page.dart';
+import 'package:flutter_social_media/features/search/presentation/pages/search_page.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -55,7 +56,16 @@ class MyDrawer extends StatelessWidget {
                   );
                 }),
             //Search tile
-            MyDrawerTile(title: "SEARCH", icon: Icons.search, onTap: () {}),
+            MyDrawerTile(
+              title: "SEARCH",
+              icon: Icons.search,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchPage(),
+                ),
+              ),
+            ),
             //Settings tile
             MyDrawerTile(title: "SETTINGS", icon: Icons.settings, onTap: () {}),
             Spacer(),

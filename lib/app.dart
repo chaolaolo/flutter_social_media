@@ -9,6 +9,8 @@ import 'package:flutter_social_media/features/post/data/firebase_post_repository
 import 'package:flutter_social_media/features/post/presentation/cubits/post_cubit.dart';
 import 'package:flutter_social_media/features/profile/data/firebase_profile_repository.dart';
 import 'package:flutter_social_media/features/profile/presentation/cubits/profile_cubit.dart';
+import 'package:flutter_social_media/features/search/data/firebase_search_repository.dart';
+import 'package:flutter_social_media/features/search/presentation/cubits/search_cubit.dart';
 import 'package:flutter_social_media/features/storage/data/firebase_storage_repository.dart';
 import 'package:flutter_social_media/themes/light_mode.dart';
 
@@ -39,6 +41,9 @@ class MyApp extends StatelessWidget {
   // post repo
   final firebasePostRepository = FirebasePostRepository();
 
+  //search repo
+  final firebaseSearchRepository = FirebaseSearchRepository();
+
   MyApp({super.key});
 
   @override
@@ -68,6 +73,10 @@ class MyApp extends StatelessWidget {
             postRepository: firebasePostRepository,
             storageRepository: firebaseStorageRepository,
           ),
+        ),
+        //Search cubit
+        BlocProvider<SearchCubit>(
+          create: (context) => SearchCubit(searchRepository: firebaseSearchRepository),
         ),
       ],
       child: MaterialApp(
